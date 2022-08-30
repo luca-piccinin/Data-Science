@@ -34,6 +34,10 @@ library(gganimate)
 df <- read.csv2("police_deaths_in_america_v3.csv")
 View(df)
   
+Theme = theme(axis.text.x = element_text(size = 15),
+              axis.title.x = element_text(size = 15),
+              axis.text.y = element_text(size = 15),
+              axis.title.y = element_text(size = 15))
 
 #CASUSE DELLA MORTE, USANDO GRAFICO A TORTA
 df %>%
@@ -50,7 +54,8 @@ df %>%
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
         panel.border = element_blank()) +
-  guides(fill = guide_legend(reverse = FALSE))
+  guides(fill = guide_legend(reverse = FALSE),
+         text(size = 15))
 
 #ANNO CON PIU' MORTI, USANDO GRAFICO LINEARE
 df %>%
@@ -65,7 +70,8 @@ df %>%
   theme_ipsum() +
   labs(title = paste0(nrow(df), " Dead case in ", (2022 - 1971), " different Year"),
        subtitle = paste0("Added case from: 1971 to 2022",
-                         x = "", y = ""))
+                         x = "", y = "")) +
+  Theme
 
 #MESE DELL'ANNO CON PIU' MORTI, USANDO ISTOGRAMMA
 df %>%
@@ -83,7 +89,8 @@ df %>%
   theme(legend.position = "none") +
   scale_y_discrete(limits = rev) +
   scale_x_continuous(limits = c(0, 2500)) +
-  labs(title = paste0(nrow(df), " Dead case for every month"))
+  labs(title = paste0(nrow(df), " Dead case for every month")) +
+  Theme
 
 #GIORNO DELLA SETTIMANA CON PIU' MORTI, USANDO ISTOGRAMMA
 df %>%
@@ -101,7 +108,8 @@ df %>%
   theme(legend.position = "none") +
   scale_y_discrete(limits = rev) +
   scale_x_continuous(limits = c(0, 4200)) +
-  labs(title = paste0(nrow(df), " Dead case for every day of week"))
+  labs(title = paste0(nrow(df), " Dead case for every day of week")) +
+  Theme
 
 #STATO CON PIU' MORI, USANDO ISTOGRAMMA
 df %>%
@@ -125,7 +133,8 @@ df %>%
   labs(title = paste0(nrow(df), " Dead case in ",
                       length(unique(df$State)), " different State"),
        subtitle = paste0("Added case from: 1971 to 2022",
-       x = "", y = ""))
+       x = "", y = "")) +
+  Theme
 
 #STATO CON PIU' MORI, USANDO LA MAPPA
 usa <- map_data("state")
@@ -161,7 +170,8 @@ usa %>%
              color = "red", alpha = 0.5) +
   coord_cartesian(xlim = c(-125,-65), ylim = c(25,50)) +
   scale_size(range = c(1,10)) +
-  labs(size = "Cases", x = "", y = "")
+  labs(size = "Cases", x = "", y = "") +
+  Theme
 
 #MORTI PER RUOLO, CON ISTOGRAMMA (più funzionale)
 df %>%
@@ -183,7 +193,8 @@ df %>%
   scale_y_discrete(limits = rev) +
   scale_x_continuous(limits = c(0, 9000)) +
   labs(title = paste0(nrow(df), " Dead case for ",
-                      length(unique(df$Rank)), " different police rank"))
+                      length(unique(df$Rank)), " different police rank")) +
+  Theme
 
 #MORTI PER RUOLO, CON GRAFICO A TORTA
 df %>%
