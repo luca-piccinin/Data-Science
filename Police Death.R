@@ -33,11 +33,14 @@ library(gganimate)
 
 df <- read.csv2("police_deaths_in_america_v3.csv")
 View(df)
+df <- df[-26309,]
+df <- df[-26308,]
   
 Theme = theme(axis.text.x = element_text(size = 15),
               axis.title.x = element_text(size = 15),
               axis.text.y = element_text(size = 15),
-              axis.title.y = element_text(size = 15))
+              axis.title.y = element_text(size = 15),
+              plot.title = element_text(size=20))
 
 #CASUSE DELLA MORTE, USANDO GRAFICO A TORTA
 df %>%
@@ -54,8 +57,7 @@ df %>%
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
         panel.border = element_blank()) +
-  guides(fill = guide_legend(reverse = FALSE),
-         text(size = 15))
+  guides(fill = guide_legend(reverse = FALSE))
 
 #ANNO CON PIU' MORTI, USANDO GRAFICO LINEARE
 df %>%
@@ -64,33 +66,34 @@ df %>%
   geom_point(color = "black", size = .75) +
   geom_line(color = "grey", size = .5) +
   ylim(0,700) +
-  xlim(1790,2022) +
+  xlim(1791,2022) +
   xlab("Year") +
   ylab("Dead") +
   theme_ipsum() +
-  labs(title = paste0(nrow(df), " Dead case in ", (2022 - 1971), " different Year"),
-       subtitle = paste0("Added case from: 1971 to 2022",
+  labs(title = paste0(nrow(df), " Dead case in ", (2022 - 1791), " different Year"),
+       subtitle = paste0("Added case from: 1791 to 2022",
                          x = "", y = "")) +
   Theme
 
 #MESE DELL'ANNO CON PIU' MORTI, USANDO ISTOGRAMMA
 df %>%
-  add_count(Month) %>%
-  mutate(Month = as.factor(Month),
-         Month = factor(df$Month, levels = month.name)) %>%
-  count(Month) %>%
-  ggplot(aes(x = n, y = Month)) +
-  geom_col(aes(fill = Month), color = "black") +
-  geom_label(aes(label = n, fill = Month),
-             color = "black", alpha = 0.5, nudge_x = 10, size = 4) +
-  theme_bw() +
-  xlab("Dead") +
-  ylab("Month") +
-  theme(legend.position = "none") +
-  scale_y_discrete(limits = rev) +
-  scale_x_continuous(limits = c(0, 2500)) +
-  labs(title = paste0(nrow(df), " Dead case for every month")) +
-  Theme
+    add_count(Month) %>%
+    mutate(Month = as.factor(Month),
+           Month = factor(df$Month, levels = month.name)) %>%
+    count(Month) %>%
+    ggplot(aes(x = n, y = Month)) +
+    geom_col(aes(fill = Month), color = "black") +
+    scale_x_continuous(breaks = c(1500, 2500)) +
+    coord_cartesian(xlim = c(1500,2500)) +
+    geom_label(aes(label = n, fill = Month),
+               color = "black", alpha = 0.5, nudge_x = 10, size = 4) +
+    theme_bw() +
+    xlab("Dead") +
+    ylab("Month") +
+    theme(legend.position = "none") +
+    scale_y_discrete(limits = rev) +
+    labs(title = paste0(nrow(df), " Dead case for every day of month")) +
+    Theme
 
 #GIORNO DELLA SETTIMANA CON PIU' MORTI, USANDO ISTOGRAMMA
 df %>%
@@ -100,6 +103,8 @@ df %>%
   count(Day) %>%
   ggplot(aes(x = n, y = Day)) +
   geom_col(aes(fill = Day), color = "black") +
+  scale_x_continuous(breaks = c(3000, 4100)) +
+  coord_cartesian(xlim = c(3000,4100)) +
   geom_label(aes(label = n, fill = Day),
              color = "black", alpha = 0.5, nudge_x = 10, size = 4) +
   theme_bw() +
@@ -107,11 +112,10 @@ df %>%
   ylab("Day") +
   theme(legend.position = "none") +
   scale_y_discrete(limits = rev) +
-  scale_x_continuous(limits = c(0, 4200)) +
   labs(title = paste0(nrow(df), " Dead case for every day of week")) +
   Theme
 
-#STATO CON PIU' MORI, USANDO ISTOGRAMMA
+#STATO CON PIU' MORTI, USANDO ISTOGRAMMA
 df %>%
   add_count(State) %>%
   mutate(State = as.factor(State),
@@ -212,3 +216,22 @@ df %>%
         panel.grid = element_blank(),
         panel.border = element_blank()) +
   guides(fill = guide_legend(reverse = FALSE))
+
+#ANNO CON PIU' CANI MORTI, USANDO GRAFICO LINEARE
+dog = df %>% 
+  filter(Rank == "K9")
+
+dog %>%
+  count(Year) %>%
+  ggplot( aes(x = Year, y = n)) +
+  geom_point(color = "black", size = .75) +
+  geom_line(color = "grey", size = .5) +
+  ylim(0,40) +
+  xlim(1960,2022) +
+  xlab("Year") +
+  ylab("Dead") +
+  theme_ipsum() +
+  labs(title = paste0(" K9 Unit dead in ", (2022 - 1960), " different Year"),
+       subtitle = paste0("Added case from: 1960 to 2022",
+                         x = "", y = "")) +
+  Theme
